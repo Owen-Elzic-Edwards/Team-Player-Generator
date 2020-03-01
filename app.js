@@ -61,7 +61,9 @@ const initial = [
 
 
 const init = () => {
-    if(!fs.exists(OUTPUT_DIR)) fs.mkdir(OUTPUT_DIR);
+    if(!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR)
+    };
     console.log('Please build your team');
     question('manager');
 };
@@ -100,7 +102,7 @@ inquirer.prompt(makePrompt(choice, info))
         .then(answer => question(answer.choice));
     })
 } else {
-    fs.writeFile(outputPath,)
+    fs.writeFile(outputPath, render(employees), () => console.log("success!"));
 }
 }
 
