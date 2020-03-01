@@ -88,16 +88,10 @@ const initial = [
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work!```
 
-
 const init = () => {
     if(!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);
     console.log('Please build your team');
-    const first = {
-        role: 'manager',
-        info: 'office number',
-        employee(w, x, y, z) {return new Manager(w, x, y, z)}
-    }
-    question(first);
+    question(initial[0].choices[0].value);
 };
 
 const question = choice => {
