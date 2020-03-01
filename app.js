@@ -71,15 +71,25 @@ const init = () => {
 const question = choice => {
 let done = false;
 let info;
+let employee = () => {};
 switch(choice) {
     case 'manager':
         info = "office number";
+        employee = (w, x, y, z) => {
+            return new Manager(w, x, y, z);
+        }
         break;
     case 'engineer':
         info = "Github username";
+        employee = (w, x, y, z) => {
+            return new Engineer(w, x, y, z);
+        }
         break;
     case 'intern':
         info = "school";
+        employee = (w, x, y, z) => {
+            return new Intern(w, x, y, z);
+        }
         break;
     default:
         done = true;
@@ -87,17 +97,7 @@ switch(choice) {
 if (!done){
 inquirer.prompt(makePrompt(choice, info))
     .then(data => {
-        switch(choice){
-        case 'manager':
-            employees.push(new Manager(data.name, data.id, data.email, data.info))
-            break;
-        case 'engineer':
-            employees.push(new Engineer(data.name, data.id, data.email, data.info))
-            break;
-        case 'intern':
-            employees.push(new Intern(data.name, data.id, data.email, data.info))
-            break;
-        }
+        employees.push(employee(data.name, data.id, data.email, data.info));
         inquirer.prompt(initial)
         .then(answer => question(answer.choice));
     })
