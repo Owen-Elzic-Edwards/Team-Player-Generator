@@ -61,6 +61,7 @@ const initial = [
 
 
 const init = () => {
+    if(!fs.exists(OUTPUT_DIR)) fs.mkdir(OUTPUT_DIR);
     console.log('Please build your team');
     question('manager');
 };
@@ -99,7 +100,7 @@ inquirer.prompt(makePrompt(choice, info))
         .then(answer => question(answer.choice));
     })
 } else {
-    console.log("done");
+    fs.writeFile(outputPath,)
 }
 }
 
