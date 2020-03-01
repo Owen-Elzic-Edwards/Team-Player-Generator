@@ -10,6 +10,42 @@ const outputPath = path.join(OUTPUT_DIR, 'team.html');
 
 const render = require('./lib/htmlRenderer');
 
+const employees = [];
+
+function makePrompt(role, info) {
+ return [
+     {
+         type: 'input',
+         message: `What is your ${role}'s name?`,
+         name: 'name'
+     },
+     {
+         type: 'input',
+         message: `What is your ${role}'s id?`,
+         name: 'id'
+     },
+     {
+         type: 'input',
+         message: `What is your ${role}'s email?`,
+         name: 'email'
+     },
+     {
+         type: 'input',
+         message: `What is your ${role}'s ${info}?`,
+         name: 'info'
+     }
+ ]
+}
+
+const initial = [
+    {
+        type: 'list',
+        message: 'Which type of team member would you like to add?',
+        choices: ['manager', 'engineer', 'intern', 'I dont want to add anymore team members'],
+        name: 'choice'
+    }
+]
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
@@ -23,7 +59,49 @@ const render = require('./lib/htmlRenderer');
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work!```
 
-const init = () => {};
+
+const init = () => {
+    console.log('Please build your team');
+    question('manager');
+};
+
+const question = choice => {
+let done = false;
+let info;
+switch(choice) {
+    case 'manager':
+        info = "office number";
+        break;
+    case 'engineer':
+        info = "Github username";
+        break;
+    case 'intern':
+        info = "school";
+        break;
+    default:
+        done = true;
+}
+if (!done){
+inquirer.prompt(makePrompt(choice, info))
+    .then(data => {
+        switch(choice){
+        case 'manager':
+            employees.push(new Manager(data.name, data.id, data.email, data.info))
+            break;
+        case 'engineer':
+            employees.push(new Engineer(data.name, data.id, data.email, data.info))
+            break;
+        case 'intern':
+            employees.push(new Intern(data.name, data.id, data.email, data.info))
+            break;
+        }
+        inquirer.prompt(initial)
+        .then(answer => question(answer.choice));
+    })
+} else {
+    console.log("done");
+}
+}
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
