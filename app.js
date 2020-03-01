@@ -12,26 +12,26 @@ const render = require('./lib/htmlRenderer');
 
 const employees = [];
 
-function makePrompt(role, info) {
+const makePrompt = (choice) => {
  return [
      {
          type: 'input',
-         message: `What is your ${role}'s name?`,
+         message: `What is your ${choice.role}'s name?`,
          name: 'name'
      },
      {
          type: 'input',
-         message: `What is your ${role}'s id?`,
+         message: `What is your ${choice.role}'s id?`,
          name: 'id'
      },
      {
          type: 'input',
-         message: `What is your ${role}'s email?`,
+         message: `What is your ${choice.role}'s email?`,
          name: 'email'
      },
      {
          type: 'input',
-         message: `What is your ${role}'s ${info}?`,
+         message: `What is your ${choice.role}'s ${choice.info}?`,
          name: 'info'
      }
  ]
@@ -41,7 +41,36 @@ const initial = [
     {
         type: 'list',
         message: 'Which type of team member would you like to add?',
-        choices: ['manager', 'engineer', 'intern', 'I dont want to add anymore team members'],
+        choices: [
+            {
+                name: 'manager',
+                value: {
+                    role: 'manager',
+                    info: 'office number',
+                    employee(w, x, y, z) {return new Manager(w, x, y, z)}
+                }
+            }, 
+            {
+                name: 'engineer',
+                value: {
+                    role: 'engineer',
+                    info: 'Github username',
+                    employee(w, x, y, z) {return new Engineer(w, x, y, z)} 
+                }
+            }, 
+            {
+                name: 'intern',
+                value: {
+                    role: 'intern',
+                    info: 'school',
+                    employee(w, x, y, z) {return new Intern(w, x, y, z)}
+                }
+            }, 
+            {
+                name: 'I dont want to add anymore team members',
+                value: false
+            }
+        ],
         name: 'choice'
     }
 ]
@@ -63,33 +92,19 @@ const initial = [
 const init = () => {
     if(!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);
     console.log('Please build your team');
-    question('manager');
+    const first = {
+        role: 'manager',
+        info: 'office number',
+        employee(w, x, y, z) {return new Manager(w, x, y, z)}
+    }
+    question(first);
 };
 
 const question = choice => {
-let done = false;
-let info;
-let employee = () => {};
-switch(choice) {
-    case 'manager':
-        info = "office number";
-        employee = (w, x, y, z) => new Manager(w, x, y, z);
-        break;
-    case 'engineer':
-        info = "Github username";
-        employee = (w, x, y, z) => new Engineer(w, x, y, z);
-        break;
-    case 'intern':
-        info = "school";
-        employee = (w, x, y, z) => new Intern(w, x, y, z);
-        break;
-    default:
-        done = true;
-}
-if (!done){
-inquirer.prompt(makePrompt(choice, info))
+if (choice){
+inquirer.prompt(makePrompt(choice))
     .then(data => {
-        employees.push(employee(data.name, data.id, data.email, data.info));
+        employees.push(choice.employee(data.name, data.id, data.email, data.info));
         inquirer.prompt(initial)
         .then(answer => question(answer.choice));
     })
