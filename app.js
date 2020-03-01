@@ -61,9 +61,7 @@ const initial = [
 
 
 const init = () => {
-    if(!fs.existsSync(OUTPUT_DIR)) {
-        fs.mkdirSync(OUTPUT_DIR)
-    };
+    if(!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);
     console.log('Please build your team');
     question('manager');
 };
@@ -75,21 +73,15 @@ let employee = () => {};
 switch(choice) {
     case 'manager':
         info = "office number";
-        employee = (w, x, y, z) => {
-            return new Manager(w, x, y, z);
-        }
+        employee = (w, x, y, z) => new Manager(w, x, y, z);
         break;
     case 'engineer':
         info = "Github username";
-        employee = (w, x, y, z) => {
-            return new Engineer(w, x, y, z);
-        }
+        employee = (w, x, y, z) => new Engineer(w, x, y, z);
         break;
     case 'intern':
         info = "school";
-        employee = (w, x, y, z) => {
-            return new Intern(w, x, y, z);
-        }
+        employee = (w, x, y, z) => new Intern(w, x, y, z);
         break;
     default:
         done = true;
