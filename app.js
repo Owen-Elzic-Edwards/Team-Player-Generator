@@ -104,7 +104,7 @@ const question = choice => {
 if (choice){
 inquirer.prompt(makePrompt(choice))
     .then(data => {
-        employees.push(choice.employee(data.name, data.id, data.email, data.info));
+        employees.push(choice.employee(...data));
         inquirer.prompt(initial)
         .then(answer => question(answer.choice));
     })
