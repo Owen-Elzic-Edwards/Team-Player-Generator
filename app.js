@@ -82,16 +82,16 @@ const init = () => {
 };
 
 const question = choice => {
-if (choice){
-inquirer.prompt(makePrompt(choice))
-    .then(data => {
-        employees.push(choice.employee(...data));
-        inquirer.prompt(initial)
+    if (choice){
+    inquirer.prompt(makePrompt(choice))
+        .then(data => {
+            employees.push(choice.employee(data.name, data.id, data.email, data.info));
+            inquirer.prompt(initial)
         .then(answer => question(answer.choice));
     })
-} else {
-    fs.writeFile(outputPath, render(employees), () => console.log("success!"));
-}
+    } else {
+        fs.writeFile(outputPath, render(employees), () => console.log("success!"));
+    }
 }
 
 // Write code to use inquirer to gather information about the development team members,
